@@ -67,7 +67,7 @@ public class InfoCommand extends SubCommand {
                 .map(Bukkit::getOfflinePlayer)
                 .map(OfflinePlayer::getName)
                 .collect(Collectors.joining(", "));
-        sender.sendMessage("メンバー: %s", members.isEmpty() ? "-" : members);
+        sender.sendMessage(String.format("メンバー: %s", members.isEmpty() ? "-" : members));
         return true;
     }
 

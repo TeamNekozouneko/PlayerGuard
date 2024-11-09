@@ -50,7 +50,7 @@ public class AddCommand extends SubCommand {
             return true;
         }
 
-        if (add == null) {
+        if (add == null || add.equals(player)) {
             sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"該当するプレイヤーはオンラインでないか、存在しません。");
             return true;
         }

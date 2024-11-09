@@ -33,6 +33,12 @@ public class ClaimCommand implements CommandExecutor, TabCompleter {
         Player p = (Player) sender;
 
         CuboidRegion cr = ss.getSelection(p.getUniqueId());
+
+        if (cr == null) {
+            sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"金の斧で保護する範囲を指定してください。");
+            return true;
+        }
+
         RegionContainer rc = WorldGuard.getInstance().getPlatform().getRegionContainer();
         RegionManager rm = rc.get(BukkitAdapter.adapt(p.getWorld()));
 

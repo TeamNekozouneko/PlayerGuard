@@ -50,7 +50,7 @@ public class RemoveCommand extends SubCommand {
             return true;
         }
 
-        if (remove == null) {
+        if (remove == null || remove.equals(player)) {
             sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"該当するプレイヤーはオンラインでないか、存在しません。");
             return true;
         }

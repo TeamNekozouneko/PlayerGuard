@@ -53,7 +53,7 @@ public class TransferCommand extends SubCommand {
             return true;
         }
 
-        if (transferTo == null) {
+        if (transferTo == null || transferTo.equals(player)) {
             sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"該当するプレイヤーはオンラインでないか、存在しません。");
             return true;
         }

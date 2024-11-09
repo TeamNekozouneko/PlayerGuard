@@ -14,7 +14,7 @@ public class PlayerInteractListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onInteract(PlayerInteractEvent e) {
-        if (e.getClickedBlock() == null && e.getAction() == Action.RIGHT_CLICK_BLOCK) return;
+        if (e.getClickedBlock() == null || e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (e.getItem() == null || e.getItem().getType() != Material.GOLDEN_AXE) return;
 
         e.setCancelled(true);

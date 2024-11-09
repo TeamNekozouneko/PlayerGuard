@@ -74,7 +74,7 @@ public class ClaimCommand implements CommandExecutor, TabCompleter {
         ProtectedRegion protect = new ProtectedCuboidRegion(id, cr.getPos1(), cr.getPos2());
         protect.getOwners().addPlayer(p.getUniqueId());
         GuardFlags.initRegionFlags(protect);
-        protect.setFlag(PlayerGuard.getGUARD_REGISTERED_FLAG(), StateFlag.State.ALLOW);
+        protect.setFlag(PlayerGuard.getGuardRegisteredFlag(), StateFlag.State.ALLOW);
 
         long count = rm.getApplicableRegions(protect).getRegions().stream()
                 .filter(pr -> !(pr instanceof GlobalProtectedRegion))

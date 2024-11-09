@@ -1,15 +1,13 @@
 package net.nekozouneko.playerguard.task;
 
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.internal.platform.WorldGuardPlatform;
-import com.sk89q.worldguard.protection.ApplicableRegionSet;
-import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.nekozouneko.playerguard.PGUtil;
 import net.nekozouneko.playerguard.PlayerGuard;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -32,29 +30,19 @@ public class ActionbarTask extends BukkitRunnable {
     }
 
     private void showRegionInfo(Player p) {
-        ApplicableRegionSet ars = platform.getRegionContainer().get(BukkitAdapter.adapt(p.getWorld()))
-                .getApplicableRegions(BukkitAdapter.asBlockVector(p.getLocation()));
+        ProtectedRegion region = PGUtil.getCurrentPositionRegion(p);
 
-        if (ars.getRegions().isEmpty()) return;
+        if (region == null) return;
 
-        boolean hasResult = false;
-        String id = "";
-        String owner = "";
-        for (ProtectedRegion pr : ars.getRegions()) {
-            if (pr.getFlag(PlayerGuard.getGUARD_REGISTERED_FLAG()) == StateFlag.State.ALLOW) {
-                id = pr.getId();
-                owner = pr.getOwners().getUniqueIds().stream()
-                        .map(Bukkit::getOfflinePlayer)
-                        .map(OfflinePlayer::getName)
-                        .collect(Collectors.joining(", "));
-                hasResult = true;
-            }
-        }
+        String id = region.getId();
+        String owner = region.getOwners().getUniqueIds().stream()
+                .map(Bukkit::getOfflinePlayer)
+                .map(OfflinePlayer::getName)
+                .collect(Collectors.joining(", "));
 
-        if (hasResult)
-            p.spigot().sendMessage(ChatMessageType.ACTION_BAR,
-                    new TextComponent(String.format(ChatColor.YELLOW+"◆ "+ChatColor.AQUA+"%s (%s) "+ChatColor.YELLOW+"◆", id, owner))
-            );
+        p.spigot().sendMessage(ChatMessageType.ACTION_BAR,
+                new TextComponent(String.format(ChatColor.YELLOW+"◆ "+ChatColor.AQUA+"%s (%s) "+ChatColor.YELLOW+"◆", id, owner))
+        );
     }
 
     private void showSelectionUsage(Player p) {

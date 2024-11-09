@@ -30,10 +30,10 @@ public enum GuardFlags {
         this.flags = flags;
     }
 
-    private State getState(ProtectedRegion pr) {
+    public static State getState(ProtectedRegion pr, GuardFlags flag) {
         List<StateFlag.State> states = new ArrayList<>();
-        for (StateFlag flag : flags) {
-            states.add(pr.getFlag(flag));
+        for (StateFlag fl : flag.getFlags()) {
+            states.add(pr.getFlag(fl));
         }
 
         if (Collections3.allValueEquals(states, StateFlag.State.ALLOW)) {

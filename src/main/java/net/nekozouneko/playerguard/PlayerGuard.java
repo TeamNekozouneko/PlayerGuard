@@ -29,7 +29,7 @@ public final class PlayerGuard extends JavaPlugin {
     @Getter
     private static PlayerGuard instance;
     @Getter
-    private static StateFlag GUARD_REGISTERED_FLAG;
+    private static StateFlag guardRegisteredFlag;
     private static final int PROTECTION_LIMIT_BASE_VALUE = 30000;
 
     @Getter
@@ -41,13 +41,13 @@ public final class PlayerGuard extends JavaPlugin {
     public void onLoad() {
         FlagRegistry registry = WorldGuard.getInstance().getFlagRegistry();
         try {
-            GUARD_REGISTERED_FLAG = new GuardRegisteredFlag();
-            registry.register(GUARD_REGISTERED_FLAG);
+            guardRegisteredFlag = new GuardRegisteredFlag();
+            registry.register(guardRegisteredFlag);
         }
         catch (FlagConflictException fce) {
             Flag<?> alreadyRegistered = registry.get("pguard-registered");
             if (alreadyRegistered instanceof GuardRegisteredFlag) {
-                GUARD_REGISTERED_FLAG = (GuardRegisteredFlag) alreadyRegistered;
+                guardRegisteredFlag = (GuardRegisteredFlag) alreadyRegistered;
             }
             else throw fce;
         }
@@ -100,23 +100,10 @@ public final class PlayerGuard extends JavaPlugin {
     }
 
     public long getProtectionUsed(Player player) {
-        RegionContainer rc = WorldGuard.getInstance().getPlatform().getRegionContainer();
         long used = 0;
 
-        for (RegionManager rm : rc.getLoaded()) {
-            for (ProtectedRegion pr : rm.getRegions().values()) {
-                if (pr instanceof GlobalProtectedRegion || pr.getId().equals("__global__"))
-                    continue;
-
-                if (!pr.getOwners().getUniqueIds().contains(player.getUniqueId()))
-                    continue;
-
-                if (pr.getFlag(GUARD_REGISTERED_FLAG) == StateFlag.State.DENY)
-                    continue;
-
-                used += pr.volume();
-            }
-        }
+        for (ProtectedRegion region : PGUtil.getPlayerRegions(player).keySet())
+            used += region.volume();
 
         return used;
     }

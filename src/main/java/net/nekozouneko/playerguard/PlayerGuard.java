@@ -8,6 +8,7 @@ import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import lombok.Getter;
 import net.nekozouneko.playerguard.command.*;
+import net.nekozouneko.playerguard.command.sub.playerguard.ConfirmCommand;
 import net.nekozouneko.playerguard.flag.GuardRegisteredFlag;
 import net.nekozouneko.playerguard.listener.PlayerChangedWorldListener;
 import net.nekozouneko.playerguard.listener.PlayerInteractListener;
@@ -80,6 +81,8 @@ public final class PlayerGuard extends JavaPlugin {
         regionActionbarTask = null;
         safetyTaskCancel(selectionRenderTask);
         selectionRenderTask = null;
+
+        ConfirmCommand.clearConfirms();
     }
 
     public long getProtectLimit(Player player) {

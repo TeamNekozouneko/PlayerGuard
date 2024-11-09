@@ -25,4 +25,4 @@ commands:
   playerguard:
     aliases: [pg, guard]
     description: "PlayerGuard command"
-    usage: "/<command> (add|remove|transfer|disclaim) [<args>]"
+    usage: "/<command> (add|info|remove|transfer) [<args>]"

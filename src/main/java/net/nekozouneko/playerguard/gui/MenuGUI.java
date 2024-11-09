@@ -31,34 +31,34 @@ public class MenuGUI extends AbstractGUI{
     @Override
     public void init() {
         if (inventory == null)
-            inventory = Bukkit.createInventory(this, 9, "フラグを管理");
+            inventory = Bukkit.createInventory(this, 9, "■ 権限を管理");
         inventory.clear();
 
         NamespacedKey key = new NamespacedKey(PlayerGuard.getInstance(), "flag");
 
         ItemStack breakFlag = ItemStackBuilder.of(Material.IRON_PICKAXE)
                 .name(ChatColor.WHITE + "ブロックの破壊")
-                .lore(ChatColor.GRAY + "状態："+GuardFlags.getState(region, GuardFlags.BREAK).name())
+                .lore(ChatColor.GRAY + "状態："+stateToJapanese(GuardFlags.getState(region, GuardFlags.BREAK)))
                 .persistentData(key, new EnumDataType<>(GuardFlags.class), GuardFlags.BREAK)
                 .build();
         ItemStack placeFlag = ItemStackBuilder.of(Material.CRAFTING_TABLE)
                 .name(ChatColor.WHITE + "ブロックの設置")
-                .lore(ChatColor.GRAY + "状態："+GuardFlags.getState(region, GuardFlags.PLACE).name())
+                .lore(ChatColor.GRAY + "状態："+stateToJapanese(GuardFlags.getState(region, GuardFlags.PLACE)))
                 .persistentData(key, new EnumDataType<>(GuardFlags.class), GuardFlags.PLACE)
                 .build();
         ItemStack interactFlag = ItemStackBuilder.of(Material.REDSTONE)
                 .name(ChatColor.WHITE + "インタラクト、チェストを開く")
-                .lore(ChatColor.GRAY + "状態："+GuardFlags.getState(region, GuardFlags.INTERACT).name())
+                .lore(ChatColor.GRAY + "状態："+stateToJapanese(GuardFlags.getState(region, GuardFlags.INTERACT)))
                 .persistentData(key, new EnumDataType<>(GuardFlags.class), GuardFlags.INTERACT)
                 .build();
         ItemStack pvpFlag = ItemStackBuilder.of(Material.IRON_SWORD)
                 .name(ChatColor.WHITE + "PvP (プレイヤー同士のダメージ)")
-                .lore(ChatColor.GRAY + "状態："+GuardFlags.getState(region, GuardFlags.PVP).name())
+                .lore(ChatColor.GRAY + "状態："+stateToJapanese(GuardFlags.getState(region, GuardFlags.PVP)))
                 .persistentData(key, new EnumDataType<>(GuardFlags.class), GuardFlags.PVP)
                 .build();
         ItemStack entityAttackFlag = ItemStackBuilder.of(Material.TRIDENT)
                 .name(ChatColor.WHITE + "エンティティへのダメージ")
-                .lore(ChatColor.GRAY + "状態："+GuardFlags.getState(region, GuardFlags.ENTITY_DAMAGE).name())
+                .lore(ChatColor.GRAY + "状態："+stateToJapanese(GuardFlags.getState(region, GuardFlags.ENTITY_DAMAGE)))
                 .persistentData(key, new EnumDataType<>(GuardFlags.class), GuardFlags.ENTITY_DAMAGE)
                 .build();
 
@@ -119,5 +119,18 @@ public class MenuGUI extends AbstractGUI{
         if (e.getInventory().getHolder() != this) return;
 
         clearAllAGUIListeners(((Player) e.getPlayer()));
+    }
+
+    private String stateToJapanese(GuardFlags.State state) {
+        switch (state) {
+            case ALLOW:
+                return "許可";
+            case DENY:
+                return "拒否";
+            case SOME_CHANGED:
+                return "管理者により変更されています";
+        }
+
+        return "不明";
     }
 }

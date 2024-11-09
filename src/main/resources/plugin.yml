@@ -1,0 +1,28 @@
+name: PlayerGuard
+version: '4.0.0-alpha.0'
+main: net.nekozouneko.playerguard.PlayerGuard
+api-version: '1.21'
+
+dependencies: [WorldGuard]
+
+commands:
+  cancel-claim:
+    aliases: [cancel]
+    description: "cancel selection"
+    usage: "/<command>"
+  claim:
+    aliases: [hogo]
+    description: "Claims selected region"
+    usage: "/<command>"
+  disclaim:
+    aliases: [remove-hogo, hogo-remove]
+    description: "Claims selected region"
+    usage: "/<command>"
+  flags:
+    description: "Manages flag of the region"
+    usage: "/<command>"
+
+  playerguard:
+    aliases: [pg, guard]
+    description: "PlayerGuard command"
+    usage: "/<command> (add|remove|transfer|disclaim) [<args>]"

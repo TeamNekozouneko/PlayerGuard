@@ -9,8 +9,10 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import net.md_5.bungee.api.ChatColor;
 import net.nekozouneko.commons.spigot.command.TabCompletes;
+import net.nekozouneko.playerguard.PGUtil;
 import net.nekozouneko.playerguard.PlayerGuard;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,6 +21,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class PlayerGuardCommand implements CommandExecutor, TabCompleter {
 
@@ -44,6 +47,7 @@ public class PlayerGuardCommand implements CommandExecutor, TabCompleter {
                 break;
             }
             case "info": {
+                regionInfoCommand(sender, args.length > 1 ? args[1] : null);
                 break;
             }
         }
@@ -67,7 +71,7 @@ public class PlayerGuardCommand implements CommandExecutor, TabCompleter {
                     Set<String> regions = new HashSet<>();
                     rc.getLoaded().forEach(rm ->
                             rm.getRegions().values().stream()
-                                    .filter(pr -> StateFlag.test(pr.getFlag(PlayerGuard.getGUARD_REGISTERED_FLAG())))
+                                    .filter(pr -> StateFlag.test(pr.getFlag(PlayerGuard.getGuardRegisteredFlag())))
                                     .filter(pr -> !(pr instanceof GlobalProtectedRegion))
                                     .filter(pr -> {
                                         if (sender instanceof Player) {
@@ -92,7 +96,7 @@ public class PlayerGuardCommand implements CommandExecutor, TabCompleter {
                     Set<String> regions = new HashSet<>();
                     rc.getLoaded().forEach(rm ->
                             rm.getRegions().values().stream()
-                                    .filter(pr -> StateFlag.test(pr.getFlag(PlayerGuard.getGUARD_REGISTERED_FLAG())))
+                                    .filter(pr -> StateFlag.test(pr.getFlag(PlayerGuard.getGuardRegisteredFlag())))
                                     .filter(pr -> !(pr instanceof GlobalProtectedRegion))
                                     .filter(pr -> {
                                         if (sender instanceof Player) {
@@ -126,18 +130,7 @@ public class PlayerGuardCommand implements CommandExecutor, TabCompleter {
         player.sendMessage(String.format(ChatColor.GRAY+"保護制限: "+ChatColor.WHITE+"%d/%d"
                 , pg.getProtectionUsed(player), pg.getProtectLimit(player)));
 
-        RegionContainer rc = WorldGuard.getInstance().getPlatform().getRegionContainer();
-        Map<ProtectedRegion, World> protects = new HashMap<>();
-        Bukkit.getWorlds().forEach(w -> {
-            RegionManager rm = rc.get(BukkitAdapter.adapt(w));
-            if (rm == null) return;
-
-            rm.getRegions().values().stream()
-                    .filter(pr -> StateFlag.test(pr.getFlag(PlayerGuard.getGUARD_REGISTERED_FLAG())))
-                    .filter(pr -> !(pr instanceof GlobalProtectedRegion))
-                    .filter(pr -> pr.getOwners().contains(player.getUniqueId()))
-                    .forEach(pr -> protects.put(pr, w));
-        });
+        Map<ProtectedRegion, World> protects = PGUtil.getPlayerRegions(player);
 
         player.sendMessage(String.format(ChatColor.GOLD+"■ "+ChatColor.YELLOW+"保護している領域 (%d)", protects.size()));
 
@@ -149,5 +142,53 @@ public class PlayerGuardCommand implements CommandExecutor, TabCompleter {
             ))
         );
 
+    }
+
+    private void regionInfoCommand(CommandSender sender, String regionId) {
+        ProtectedRegion region;
+        World world;
+
+        if (regionId == null) {
+            if (!(sender instanceof Player)) {
+                sender.sendMessage("コンソールでは直");
+                return;
+            }
+
+            region = PGUtil.getCurrentPositionRegion((Player) sender);
+            world = ((Player) sender).getWorld();
+        }
+        else {
+            Map.Entry<ProtectedRegion, World> result = PGUtil.findPlayerGuardRegions(regionId);
+            if (result == null) {
+                region = null;
+                world = null;
+            }
+            else {
+                region = result.getKey();
+                world = result.getValue();
+            }
+        }
+
+        if (region == null) {
+            sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"該当する保護領域がありません。");
+            return;
+        }
+
+        sender.sendMessage(String.format(ChatColor.GOLD+"■ "+ChatColor.YELLOW+"%s", region.getId()));
+        sender.sendMessage(String.format("(%d, %d, %d) -> (%d, %d, %d) | %s",
+                region.getMinimumPoint().x(), region.getMinimumPoint().y(), region.getMinimumPoint().z(),
+                region.getMaximumPoint().x(), region.getMaximumPoint().y(), region.getMaximumPoint().z(),
+                world.getName()
+        ));
+        sender.sendMessage(String.format("所有者: %s", region.getOwners().getUniqueIds().stream()
+                .map(Bukkit::getOfflinePlayer)
+                .map(OfflinePlayer::getName)
+                .collect(Collectors.joining(", ")))
+        );
+        String members = region.getMembers().getUniqueIds().stream()
+                .map(Bukkit::getOfflinePlayer)
+                .map(OfflinePlayer::getName)
+                .collect(Collectors.joining(", "));
+        sender.sendMessage("メンバー: %s", members.isEmpty() ? "-" : members);
     }
 }

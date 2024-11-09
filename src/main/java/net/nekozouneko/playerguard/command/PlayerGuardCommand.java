@@ -38,9 +38,31 @@ public class PlayerGuardCommand implements CommandExecutor, TabCompleter {
 
         switch (args[0]) {
             case "add": {
+                if (!(sender instanceof Player)) {
+                    sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"このコマンドはプレイヤーからのみ実行できます。");
+                    return true;
+                }
+
+                if (args.length < 2) {
+                    sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"追加するプレイヤーを指定してください。");
+                    return true;
+                }
+
+                addMemberCommand((Player) sender, args[1], args.length > 2 ? args[2] : null);
                 break;
             }
             case "remove": {
+                if (!(sender instanceof Player)) {
+                    sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"このコマンドはプレイヤーからのみ実行できます。");
+                    return true;
+                }
+
+                if (args.length < 2) {
+                    sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"削除するプレイヤーを指定してください。");
+                    return true;
+                }
+
+                removeMemberCommand((Player) sender, args[1], args.length > 2 ? args[2] : null);
                 break;
             }
             case "transfer": {
@@ -150,7 +172,7 @@ public class PlayerGuardCommand implements CommandExecutor, TabCompleter {
 
         if (regionId == null) {
             if (!(sender instanceof Player)) {
-                sender.sendMessage("コンソールでは直");
+                sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"引数を入力してください。");
                 return;
             }
 
@@ -190,5 +212,121 @@ public class PlayerGuardCommand implements CommandExecutor, TabCompleter {
                 .map(OfflinePlayer::getName)
                 .collect(Collectors.joining(", "));
         sender.sendMessage("メンバー: %s", members.isEmpty() ? "-" : members);
+    }
+
+    private void addMemberCommand(Player sender, String p, String regionId) {
+        Player player = Bukkit.getPlayer(p);
+
+        ProtectedRegion region;
+
+        if (regionId == null) {
+            region = PGUtil.getCurrentPositionRegion(sender);
+        }
+        else {
+            Map.Entry<ProtectedRegion, World> result = PGUtil.findPlayerGuardRegions(regionId);
+            if (result == null) {
+                region = null;
+            }
+            else {
+                region = result.getKey();
+            }
+        }
+
+        if (region == null || !region.getOwners().contains(sender.getUniqueId())) {
+            sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"該当する保護領域がありません。");
+            return;
+        }
+
+        if (player == null) {
+            sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"該当するプレイヤーはオンラインでないか、存在しません。");
+            return;
+        }
+
+        if (region.getMembers().contains(player.getUniqueId())) {
+            sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"該当するプレイヤーはすでに追加されています。");
+            return;
+        }
+
+        region.getMembers().addPlayer(player.getUniqueId());
+
+        sender.sendMessage(String.format(ChatColor.DARK_GREEN+"■ "+ChatColor.GREEN+"%sを追加しました。", player.getName()));
+    }
+
+    private void transferCommand(Player sender, String target, String regionId) {
+        Player player = Bukkit.getPlayer(target);
+
+        ProtectedRegion region;
+
+        if (regionId == null) {
+            region = PGUtil.getCurrentPositionRegion(sender);
+        }
+        else {
+            Map.Entry<ProtectedRegion, World> result = PGUtil.findPlayerGuardRegions(regionId);
+            if (result == null) {
+                region = null;
+            }
+            else {
+                region = result.getKey();
+            }
+        }
+
+        if (region == null || !region.getOwners().contains(sender.getUniqueId())) {
+            sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"該当する保護領域がありません。");
+            return;
+        }
+
+        if (player == null) {
+            sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"該当するプレイヤーはオンラインでないか、存在しません。");
+            return;
+        }
+
+        if (region.getMembers().contains(player.getUniqueId())) {
+            sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"該当するプレイヤーはすでに追加されています。");
+            return;
+        }
+
+        region.getMembers().clear();
+        region.getOwners().clear();
+        region.getOwners().addPlayer(player.getUniqueId());
+
+        sender.sendMessage(String.format(ChatColor.DARK_GREEN+"■ "+ChatColor.GREEN+"%sを%sに移管しました。", region.getId(), player.getName()));
+    }
+
+    private void removeMemberCommand(Player sender, String p, String regionId) {
+        Player player = Bukkit.getPlayer(p);
+
+        ProtectedRegion region;
+
+        if (regionId == null) {
+            region = PGUtil.getCurrentPositionRegion(sender);
+        }
+        else {
+            Map.Entry<ProtectedRegion, World> result = PGUtil.findPlayerGuardRegions(regionId);
+            if (result == null) {
+                region = null;
+            }
+            else {
+                region = result.getKey();
+            }
+        }
+
+        if (region == null || !region.getOwners().contains(sender.getUniqueId())) {
+            sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"該当する保護領域がありません。");
+            return;
+        }
+
+        if (player == null) {
+            sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"該当するプレイヤーはオンラインでないか、存在しません。");
+            return;
+        }
+
+        if (!region.getMembers().contains(player.getUniqueId())) {
+            sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"該当するプレイヤーはすでに削除されているか、追加していません。");
+            return;
+        }
+
+        region.getMembers().removePlayer(player.getUniqueId());
+
+        sender.sendMessage(String.format(ChatColor.DARK_GREEN+"■ "+ChatColor.GREEN+"%sを削除しました。", player.getName()));
     }
 }

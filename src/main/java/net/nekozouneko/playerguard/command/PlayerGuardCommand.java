@@ -33,6 +33,7 @@ public class PlayerGuardCommand implements CommandExecutor, TabCompleter {
         manager.register("transfer", new TransferCommand());
         manager.register("add", new AddCommand());
         manager.register("remove", new RemoveCommand());
+        manager.register("confirm", new ConfirmCommand());
     }
 
     @Override

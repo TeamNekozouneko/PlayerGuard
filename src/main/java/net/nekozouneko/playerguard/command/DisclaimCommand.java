@@ -7,6 +7,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import net.md_5.bungee.api.ChatColor;
 import net.nekozouneko.playerguard.PGUtil;
+import net.nekozouneko.playerguard.command.sub.playerguard.ConfirmCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -31,7 +32,7 @@ public class DisclaimCommand implements CommandExecutor, TabCompleter {
 
         ProtectedRegion pr = PGUtil.getCurrentPositionRegion(p);
 
-        if (pr == null) {
+        if (pr == null || !pr.getOwners().contains(p.getUniqueId())) {
             sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"ここにはあなたが削除できる保護領域がありません。");
             return true;
         }
@@ -41,9 +42,12 @@ public class DisclaimCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        rm.removeRegion(pr.getId());
+        ConfirmCommand.addConfirm(p.getUniqueId(), () -> {
+            rm.removeRegion(pr.getId());
 
-        sender.sendMessage(String.format(ChatColor.DARK_GREEN+"■ "+ChatColor.GREEN+"保護領域「%s」を削除しました。", pr.getId()));
+            sender.sendMessage(String.format(ChatColor.DARK_GREEN + "■ " + ChatColor.GREEN + "保護領域「%s」を削除しました。", pr.getId()));
+        });
+        sender.sendMessage(ChatColor.GOLD + "■ " + ChatColor.YELLOW + "削除するには/playerguard confirmを実行してください。");
 
         return true;
     }

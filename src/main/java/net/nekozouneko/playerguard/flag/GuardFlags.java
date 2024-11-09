@@ -5,6 +5,7 @@ import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import lombok.Getter;
 import net.nekozouneko.commons.lang.collect.Collections3;
+import net.nekozouneko.playerguard.PGUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,15 +48,11 @@ public enum GuardFlags {
 
     public static void initRegionFlags(ProtectedRegion region) {
         for (GuardFlags gf : values()) {
-            StateFlag.State state = boolToState(gf.getDefaultValue());
+            StateFlag.State state = PGUtil.boolToState(gf.getDefaultValue());
             for (StateFlag f : gf.getFlags()) {
                 region.setFlag(f, state);
             }
         }
-    }
-
-    private static StateFlag.State boolToState(boolean bool) {
-        return bool ? StateFlag.State.ALLOW : StateFlag.State.DENY;
     }
 
 }

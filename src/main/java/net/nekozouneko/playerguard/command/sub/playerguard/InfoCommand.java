@@ -93,4 +93,9 @@ public class InfoCommand extends SubCommand {
         }
         return Collections.emptyList();
     }
+
+    @Override
+    public String getPermission() {
+        return "playerguard.command.playerguard";
+    }
 }

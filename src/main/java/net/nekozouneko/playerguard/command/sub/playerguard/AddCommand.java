@@ -70,4 +70,9 @@ public class AddCommand extends SubCommand {
     public List<String> tabComplete(CommandSender sender, Command command, String label, List<String> args) {
         return Collections.emptyList();
     }
+
+    @Override
+    public String getPermission() {
+        return "playerguard.command.playerguard";
+    }
 }

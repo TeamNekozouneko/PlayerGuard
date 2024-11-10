@@ -1,10 +1,6 @@
 package net.nekozouneko.playerguard.command;
 
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.protection.flags.StateFlag;
-import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import com.sk89q.worldguard.protection.regions.RegionContainer;
 import net.md_5.bungee.api.ChatColor;
 import net.nekozouneko.commons.spigot.command.TabCompletes;
 import net.nekozouneko.playerguard.PGUtil;
@@ -12,8 +8,6 @@ import net.nekozouneko.playerguard.PlayerGuard;
 import net.nekozouneko.playerguard.command.sub.SubCommand;
 import net.nekozouneko.playerguard.command.sub.SubCommandManager;
 import net.nekozouneko.playerguard.command.sub.playerguard.*;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -53,6 +47,8 @@ public class PlayerGuardCommand implements CommandExecutor, TabCompleter {
             List<String> args2 = new ArrayList<>(Arrays.asList(args));
             return sc.execute(sender, command, label, args2.subList(1, args2.size()));
         }
+
+        sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"権限がないかそのようなコマンドはありません。");
 
         return true;
     }

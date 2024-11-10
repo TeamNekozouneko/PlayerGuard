@@ -1,8 +1,14 @@
 package net.nekozouneko.playerguard.command.sub.playerguard;
 
+import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.protection.flags.StateFlag;
+import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 import net.md_5.bungee.api.ChatColor;
+import net.nekozouneko.commons.spigot.command.TabCompletes;
 import net.nekozouneko.playerguard.PGUtil;
+import net.nekozouneko.playerguard.PlayerGuard;
 import net.nekozouneko.playerguard.command.sub.SubCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -10,9 +16,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class RemoveCommand extends SubCommand {
     @Override
@@ -69,6 +73,28 @@ public class RemoveCommand extends SubCommand {
 
     @Override
     public List<String> tabComplete(CommandSender sender, Command command, String label, List<String> args) {
+        if (args.size() == 1) {
+            return TabCompletes.players(args.get(0), Bukkit.getOnlinePlayers());
+        }
+        else if (args.size() == 2) {
+            RegionContainer rc = WorldGuard.getInstance().getPlatform().getRegionContainer();
+            Set<String> regions = new HashSet<>();
+            rc.getLoaded().forEach(rm ->
+                    rm.getRegions().values().stream()
+                            .filter(pr -> StateFlag.test(pr.getFlag(PlayerGuard.getGuardRegisteredFlag())))
+                            .filter(pr -> !(pr instanceof GlobalProtectedRegion))
+                            .filter(pr -> {
+                                if (sender instanceof Player) {
+                                    return pr.getOwners().contains(((Player) sender).getUniqueId());
+                                }
+                                else return true;
+                            })
+                            .map(ProtectedRegion::getId)
+                            .forEach(regions::add)
+            );
+
+            return TabCompletes.sorted(args.get(1), regions);
+        }
         return Collections.emptyList();
     }
 

@@ -87,8 +87,8 @@ public final class PlayerGuard extends JavaPlugin {
     }
 
     public long getProtectLimit(Player player) {
-        int days = player.getStatistic(Statistic.PLAY_ONE_MINUTE) / 20 / 60 / 60 / 24;
-        long limit = (long) Math.max((PROTECTION_LIMIT_BASE_VALUE * Math.cbrt(Math.max(days, 10))), 64000);
+        int days = (player.getStatistic(Statistic.PLAY_ONE_MINUTE) / 20) / 60 / 60 / 24;
+        long limit = (long) (PROTECTION_LIMIT_BASE_VALUE * Math.cbrt(Math.min(Math.max(1, days), 10)));
 
         NamespacedKey key = new NamespacedKey(this, "limit-extends");
         Long extend = player.getPersistentDataContainer().get(key, PersistentDataType.LONG);

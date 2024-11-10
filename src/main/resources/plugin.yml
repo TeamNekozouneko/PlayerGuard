@@ -54,8 +54,6 @@ permissions:
     children:
       - playerguard.command.admin.expand
       - playerguard.command.admin.lookup
+      - playerguard.command.admin.deleteall
       - playerguard.command.admin.deletesection
     default: op
-
-  playerguard.command.admin.deleteall:
-    default: false

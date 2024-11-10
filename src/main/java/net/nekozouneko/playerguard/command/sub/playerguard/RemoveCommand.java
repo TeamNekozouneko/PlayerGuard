@@ -25,6 +25,7 @@ public class RemoveCommand extends SubCommand {
         Player player = (Player) sender;
 
         if (args.isEmpty()) {
+            sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"引数を入力してください。");
             return true;
         }
 

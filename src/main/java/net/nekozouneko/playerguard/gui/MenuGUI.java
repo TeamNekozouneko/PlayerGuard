@@ -1,6 +1,5 @@
 package net.nekozouneko.playerguard.gui;
 
-import com.sk89q.worldguard.blacklist.action.DenyAction;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import net.nekozouneko.commons.spigot.inventory.ItemStackBuilder;
@@ -47,7 +46,7 @@ public class MenuGUI extends AbstractGUI{
                 .persistentData(key, new EnumDataType<>(GuardFlags.class), GuardFlags.PLACE)
                 .build();
         ItemStack interactFlag = ItemStackBuilder.of(Material.REDSTONE)
-                .name(ChatColor.WHITE + "インタラクト、チェストを開く")
+                .name(ChatColor.WHITE + "アイテムの使用、チェストを開く")
                 .lore(ChatColor.GRAY + "状態："+stateToJapanese(GuardFlags.getState(region, GuardFlags.INTERACT)))
                 .persistentData(key, new EnumDataType<>(GuardFlags.class), GuardFlags.INTERACT)
                 .build();

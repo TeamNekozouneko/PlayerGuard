@@ -4,6 +4,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.nekozouneko.playerguard.command.sub.SubCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -53,13 +54,11 @@ public class ConfirmCommand extends SubCommand {
 
     @Override
     public boolean execute(CommandSender sender, Command command, String label, List<String> args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"このコマンドはプレイヤーからのみ実行できます。");
+        if (!(sender instanceof Player || sender instanceof ConsoleCommandSender)) {
             return true;
         }
 
-        Player p = (Player) sender;
-        Runnable confirm = getConfirm(p.getUniqueId());
+        Runnable confirm = getConfirm(sender instanceof Player ? ((Player) sender).getUniqueId() : null);
 
         if (confirm == null) {
             sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"処理を行うためのデータがありませんでした。");
@@ -67,7 +66,7 @@ public class ConfirmCommand extends SubCommand {
         }
 
         confirm.run();
-        removeConfirm(p.getUniqueId());
+        removeConfirm(sender instanceof Player ? ((Player) sender).getUniqueId() : null);
         sender.sendMessage(ChatColor.DARK_GREEN+"■ "+ChatColor.GREEN+"操作を続行しました。");
 
         return true;

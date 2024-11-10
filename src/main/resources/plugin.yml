@@ -1,9 +1,10 @@
 name: PlayerGuard
-version: '4.0.0-alpha.0'
+version: ${project.version}
 main: net.nekozouneko.playerguard.PlayerGuard
 api-version: '1.21'
 
-dependencies: [WorldGuard]
+depend: [WorldGuard]
+#loadbefore: [WorldGuard]
 
 commands:
   cancel-claim:

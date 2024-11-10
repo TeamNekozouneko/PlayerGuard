@@ -49,10 +49,9 @@ public class PlayerGuardCommand implements CommandExecutor, TabCompleter {
 
         SubCommand sc = manager.getCommand(args[0]);
 
-        if (sc != null) {
+        if (sc != null && sender.hasPermission(sc.getPermission())) {
             List<String> args2 = new ArrayList<>(Arrays.asList(args));
-            sc.execute(sender, command, label, args2.subList(1, args2.size()));
-            return true;
+            return sc.execute(sender, command, label, args2.subList(1, args2.size()));
         }
 
         return true;
@@ -61,11 +60,14 @@ public class PlayerGuardCommand implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 1) {
-            return TabCompletes.sorted(args[0], manager.getCommandNames());
+            return TabCompletes.sorted(args[0], manager.getCommandNames().stream()
+                    .filter(name -> sender.hasPermission(manager.getCommand(name).getPermission()))
+                    .collect(Collectors.toList())
+            );
         }
         else {
             SubCommand sc = manager.getCommand(args[0]);
-            if (sc != null) {
+            if (sc != null && sender.hasPermission(sc.getPermission())) {
                 List<String> args2 = new ArrayList<>(Arrays.asList(args));
                 return sc.tabComplete(sender, command, label, args2.subList(1, args2.size()));
             }

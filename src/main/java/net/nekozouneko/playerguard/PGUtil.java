@@ -76,7 +76,7 @@ public final class PGUtil {
         return new AbstractMap.SimpleEntry<>(region, world);
     }
 
-    public static StateFlag.State boolToState(boolean bool) {
-        return bool ? StateFlag.State.ALLOW : StateFlag.State.DENY;
+    public static StateFlag.State boolToState(Boolean bool) {
+        return bool == null ? null : (bool ? StateFlag.State.ALLOW : StateFlag.State.DENY);
     }
 }

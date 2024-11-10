@@ -10,19 +10,52 @@ commands:
     aliases: [cancel]
     description: "cancel selection"
     usage: "/<command>"
+    permission: playerguard.command.cancel
   claim:
     aliases: [hogo]
     description: "Claims selected region"
     usage: "/<command>"
+    permission: playerguard.command.claim
   disclaim:
     aliases: [remove-hogo, hogo-remove]
     description: "Claims selected region"
     usage: "/<command>"
+    permission: playerguard.command.disclaim
   flags:
     description: "Manages flag of the region"
     usage: "/<command>"
+    permission: playerguard.command.flags
 
   playerguard:
     aliases: [pg, guard]
     description: "PlayerGuard command"
     usage: "/<command> (add|info|remove|transfer) [<args>]"
+    permission: playerguard.command.playerguard
+
+  playerguard-admin:
+    aliases: [pguard-admin, pg-admin]
+    description: "Admin command"
+    usage: "/<command> (deleteall|deletesection|expand|lookup)"
+    permission: playerguard.command.admin
+
+permissions:
+  playerguard.command.cancel:
+    default: true
+  playerguard.command.claim:
+    default: true
+  playerguard.command.disclaim:
+    default: true
+  playerguard.command.flags:
+    default: true
+  playerguard.command.playerguard:
+    default: true
+
+  playerguard.command.admin:
+    children:
+      - playerguard.command.admin.expand
+      - playerguard.command.admin.lookup
+      - playerguard.command.admin.deletesection
+    default: op
+
+  playerguard.command.admin.deleteall:
+    default: false

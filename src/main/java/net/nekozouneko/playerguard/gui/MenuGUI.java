@@ -1,5 +1,6 @@
 package net.nekozouneko.playerguard.gui;
 
+import com.sk89q.worldguard.protection.flags.RegionGroup;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import net.nekozouneko.commons.spigot.inventory.ItemStackBuilder;
@@ -14,6 +15,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MenuGUI extends AbstractGUI{
 
@@ -92,15 +97,28 @@ public class MenuGUI extends AbstractGUI{
             case ENTITY_DAMAGE: {
                 GuardFlags.State state = GuardFlags.getState(region, flag);
 
-                if (state == GuardFlags.State.SOME_CHANGED) {
+                List<GuardFlags.State> states = Arrays.asList(GuardFlags.State.values());
+
+                int index = states.indexOf(state) + 1;
+                if (index >= states.size()) {
+                    index = 0;
+                }
+
+                GuardFlags.State nextState = states.get(index);
+                if (nextState == GuardFlags.State.SOME_CHANGED) {
+                    nextState = GuardFlags.State.ALLOW;
+                }
+
+                if (nextState == GuardFlags.State.UNSET) {
                     for (StateFlag sff : flag.getFlags()) {
-                        region.setFlag(sff, PGUtil.boolToState(flag.getDefaultValue()));
+                        region.setFlag(sff, null);
                     }
                 }
                 else {
                     boolean b = state == GuardFlags.State.ALLOW;
                     for (StateFlag sff : flag.getFlags()) {
                         region.setFlag(sff, PGUtil.boolToState(!b));
+                        region.setFlag(sff.getRegionGroupFlag(), RegionGroup.NON_MEMBERS);
                     }
                 }
 
@@ -128,6 +146,8 @@ public class MenuGUI extends AbstractGUI{
                 return "拒否";
             case SOME_CHANGED:
                 return "管理者により変更されています";
+            case UNSET:
+                return "設定解除";
         }
 
         return "不明";

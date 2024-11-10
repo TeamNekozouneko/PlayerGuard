@@ -62,7 +62,7 @@ public class TransferCommand extends SubCommand {
         region.getMembers().clear();
         region.getOwners().addPlayer(transferTo.getUniqueId());
 
-        sender.sendMessage(String.format(ChatColor.DARK_GREEN+"■ "+ChatColor.GREEN+"%sを%sに移管しました。", region.getId(), player.getName()));
+        sender.sendMessage(String.format(ChatColor.DARK_GREEN+"■ "+ChatColor.GREEN+"%sを%sに移管しました。", region.getId(), transferTo.getName()));
 
         return true;
     }

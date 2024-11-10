@@ -37,6 +37,7 @@ public final class PlayerGuard extends JavaPlugin {
 
     @Override
     public void onLoad() {
+        getLogger().info("Registering worldguard flag...");
         FlagRegistry registry = WorldGuard.getInstance().getFlagRegistry();
         try {
             guardRegisteredFlag = new GuardRegisteredFlag();
@@ -49,7 +50,6 @@ public final class PlayerGuard extends JavaPlugin {
             }
             else throw fce;
         }
-
     }
 
     @Override
@@ -71,6 +71,7 @@ public final class PlayerGuard extends JavaPlugin {
         getCommand("disclaim").setExecutor(new DisclaimCommand());
         getCommand("flags").setExecutor(new FlagsCommand());
         getCommand("playerguard").setExecutor(new PlayerGuardCommand());
+        getCommand("playerguard-admin").setExecutor(new PlayerGuardAdminCommand());
     }
 
     @Override

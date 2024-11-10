@@ -26,7 +26,7 @@ public class TransferCommand extends SubCommand {
             return true;
         }
 
-        if (args.size() < 2) {
+        if (args.isEmpty()) {
             sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"引数を入力してください。");
             return true;
         }
@@ -35,11 +35,11 @@ public class TransferCommand extends SubCommand {
         Player transferTo = Bukkit.getPlayer(args.get(0));
         ProtectedRegion region;
 
-        if (args.size() < 3) {
+        if (args.size() < 2) {
             region = PGUtil.getCurrentPositionRegion(player);
         }
         else {
-            Map.Entry<ProtectedRegion, World> result = PGUtil.findPlayerGuardRegions(args.get(2));
+            Map.Entry<ProtectedRegion, World> result = PGUtil.findPlayerGuardRegions(args.get(1));
             if (result == null) {
                 region = null;
             }

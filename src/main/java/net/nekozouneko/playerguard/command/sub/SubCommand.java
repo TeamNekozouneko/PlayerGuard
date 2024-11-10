@@ -10,4 +10,6 @@ public abstract class SubCommand {
     public abstract boolean execute(CommandSender sender, Command command, String label, List<String> args);
 
     public abstract List<String> tabComplete(CommandSender sender, Command command, String label, List<String> args);
+
+    public abstract String getPermission();
 }

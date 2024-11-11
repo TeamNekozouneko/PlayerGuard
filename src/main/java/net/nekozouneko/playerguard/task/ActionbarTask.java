@@ -10,8 +10,10 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.nekozouneko.playerguard.PGUtil;
 import net.nekozouneko.playerguard.PlayerGuard;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.stream.Collectors;
@@ -25,14 +27,23 @@ public class ActionbarTask extends BukkitRunnable {
         Bukkit.getOnlinePlayers().forEach(p -> {
             if (PlayerGuard.getInstance().getSelectionStorage().getSelection(p.getUniqueId()) != null)
                 showSelectionUsage(p);
-            else showRegionInfo(p);
+            else showInfo(p);
         });
     }
 
-    private void showRegionInfo(Player p) {
+    private void showInfo(Player p) {
         ProtectedRegion region = PGUtil.getCurrentPositionRegion(p);
 
-        if (region == null) return;
+        if (region == null) {
+            ItemStack mainHand = p.getInventory().getItemInMainHand();
+            if (mainHand == null || mainHand.getType() != Material.GOLDEN_AXE) return;
+
+            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(
+                    ChatColor.YELLOW+"◆ "+ChatColor.AQUA+"金の斧を右クリックして1点目を選択します。"+ChatColor.YELLOW+" ◆"
+            ));
+
+            return;
+        }
 
         String id = region.getId();
         String owner = region.getOwners().getUniqueIds().stream()

@@ -4,6 +4,7 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import net.nekozouneko.playerguard.PlayerGuard;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,12 +25,16 @@ public class PlayerInteractListener implements Listener {
 
         if (selection == null || !selection.getPos1().equals(selection.getPos2())) {
             selection = CuboidRegion.fromCenter(BukkitAdapter.asBlockVector(e.getClickedBlock().getLocation()), 0);
-            e.getPlayer().sendMessage(locationFormatted(selection.getPos1()) + " を設定。");
+            e.getPlayer().sendMessage(String.format(ChatColor.DARK_AQUA+"■ "+ChatColor.AQUA+"%s を設定。", locationFormatted(selection.getPos1())));
         }
         else if (selection.getPos1().equals(selection.getPos2())) {
             selection = selection.clone();
             selection.setPos2(BukkitAdapter.asBlockVector(e.getClickedBlock().getLocation()));
-            e.getPlayer().sendMessage(locationFormatted(selection.getPos1()) + " -> " + locationFormatted(selection.getPos2()) + " を設定。(x"+selection.getVolume()+")");
+            e.getPlayer().sendMessage(String.format(ChatColor.DARK_AQUA+"■ "+ChatColor.AQUA+"%s -> %s を設定。(x%d)",
+                    locationFormatted(selection.getPos1()),
+                    locationFormatted(selection.getPos2()),
+                    selection.getVolume()
+            ));
         }
         else return;
 

@@ -5,8 +5,11 @@ import com.sk89q.worldguard.protection.flags.Flag;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.flags.registry.FlagConflictException;
 import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
+import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import com.sk89q.worldguard.protection.regions.RegionContainer;
 import lombok.Getter;
+import net.md_5.bungee.api.ChatColor;
 import net.nekozouneko.playerguard.command.*;
 import net.nekozouneko.playerguard.command.sub.playerguard.ConfirmCommand;
 import net.nekozouneko.playerguard.flag.GuardRegisteredFlag;
@@ -107,6 +110,16 @@ public final class PlayerGuard extends JavaPlugin {
             used += region.volume();
 
         return used;
+    }
+
+    public void resetAllRegions() {
+        RegionContainer rc = WorldGuard.getInstance().getPlatform().getRegionContainer();
+        rc.getLoaded().forEach(rm ->
+                rm.getRegions().values().stream()
+                        .filter(pr -> !(pr instanceof GlobalProtectedRegion))
+                        .filter(pr -> StateFlag.test(pr.getFlag(PlayerGuard.getGuardRegisteredFlag())))
+                        .forEach(pr -> rm.removeRegion(pr.getId()))
+        );
     }
 
     private void safetyTaskCancel(BukkitRunnable task) {

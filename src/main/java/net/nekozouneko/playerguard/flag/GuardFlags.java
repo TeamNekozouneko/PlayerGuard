@@ -55,7 +55,7 @@ public enum GuardFlags {
             StateFlag.State state = PGUtil.boolToState(gf.getDefaultValue());
             for (StateFlag f : gf.getFlags()) {
                 region.setFlag(f, state);
-                region.setFlag(f.getRegionGroupFlag(), RegionGroup.NON_MEMBERS);
+                region.setFlag(f.getRegionGroupFlag(), gf == PVP ? null : RegionGroup.NON_MEMBERS);
             }
         }
     }

@@ -112,13 +112,14 @@ public class MenuGUI extends AbstractGUI{
                 if (nextState == GuardFlags.State.UNSET) {
                     for (StateFlag sff : flag.getFlags()) {
                         region.setFlag(sff, null);
+                        region.setFlag(sff.getRegionGroupFlag(), RegionGroup.NONE);
                     }
                 }
                 else {
                     boolean b = state == GuardFlags.State.ALLOW;
                     for (StateFlag sff : flag.getFlags()) {
                         region.setFlag(sff, PGUtil.boolToState(!b));
-                        region.setFlag(sff.getRegionGroupFlag(), RegionGroup.NON_MEMBERS);
+                        region.setFlag(sff.getRegionGroupFlag(), flag == GuardFlags.PVP ? null : RegionGroup.NON_MEMBERS);
                     }
                 }
 

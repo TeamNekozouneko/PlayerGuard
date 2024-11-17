@@ -18,6 +18,7 @@ import net.nekozouneko.playerguard.listener.PlayerInteractListener;
 import net.nekozouneko.playerguard.selection.SelectionStorage;
 import net.nekozouneko.playerguard.task.ActionbarTask;
 import net.nekozouneko.playerguard.task.SelectionRenderTask;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
@@ -91,7 +92,7 @@ public final class PlayerGuard extends JavaPlugin {
 
     public long getProtectLimit(Player player) {
         int days = (player.getStatistic(Statistic.PLAY_ONE_MINUTE) / 20) / 60 / 60 / 24;
-        long limit = (long) (PROTECTION_LIMIT_BASE_VALUE * Math.cbrt(Math.min(Math.max(1, days), 10)));
+        long limit = (long) (PROTECTION_LIMIT_BASE_VALUE * Math.cbrt(Math.min(Math.max(1, days+1), 10)));
 
         NamespacedKey key = new NamespacedKey(this, "limit-extends");
         Long extend = player.getPersistentDataContainer().get(key, PersistentDataType.LONG);

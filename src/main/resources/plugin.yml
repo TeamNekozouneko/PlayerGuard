@@ -3,8 +3,9 @@ version: ${project.version}
 main: net.nekozouneko.playerguard.PlayerGuard
 api-version: '1.21'
 
+authors: [Taitaitatata, "Nekozouneko Group"]
 depend: [WorldGuard]
-#loadbefore: [WorldGuard]
+website: "https://github.com/TeamNekozouneko/PlayerGuard"
 
 commands:
   cancel-claim:

@@ -16,7 +16,7 @@ public enum GuardFlags {
 
     BREAK(null, Flags.BLOCK_BREAK),
     PLACE(null, Flags.BLOCK_PLACE),
-    INTERACT(true, Flags.INTERACT, Flags.CHEST_ACCESS),
+    INTERACT(true, Flags.USE, Flags.INTERACT, Flags.CHEST_ACCESS, Flags.USE_ANVIL),
     PVP(false, Flags.PVP),
     ENTITY_DAMAGE(true, Flags.DAMAGE_ANIMALS);
 

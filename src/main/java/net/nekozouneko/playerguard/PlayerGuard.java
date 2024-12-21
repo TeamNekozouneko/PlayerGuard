@@ -12,6 +12,7 @@ import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 import net.nekozouneko.playerguard.command.*;
 import net.nekozouneko.playerguard.command.sub.playerguard.ConfirmCommand;
+import net.nekozouneko.playerguard.flag.GuardIgnoredFlag;
 import net.nekozouneko.playerguard.flag.GuardRegisteredFlag;
 import net.nekozouneko.playerguard.listener.PlayerChangedWorldListener;
 import net.nekozouneko.playerguard.listener.PlayerInteractListener;
@@ -32,6 +33,8 @@ public final class PlayerGuard extends JavaPlugin {
     private static PlayerGuard instance;
     @Getter
     private static StateFlag guardRegisteredFlag;
+    @Getter
+    private static StateFlag guardIgnoredFlag;
     private static final int PROTECTION_LIMIT_BASE_VALUE = 30000;
 
     @Getter
@@ -51,6 +54,18 @@ public final class PlayerGuard extends JavaPlugin {
             Flag<?> alreadyRegistered = registry.get("pguard-registered");
             if (alreadyRegistered instanceof GuardRegisteredFlag) {
                 guardRegisteredFlag = (GuardRegisteredFlag) alreadyRegistered;
+            }
+            else throw fce;
+        }
+
+        try {
+            guardIgnoredFlag = new GuardRegisteredFlag();
+            registry.register(guardIgnoredFlag);
+        }
+        catch (FlagConflictException fce) {
+            Flag<?> alreadyRegistered = registry.get("pguard-ignored");
+            if (alreadyRegistered instanceof GuardIgnoredFlag) {
+                guardIgnoredFlag = (GuardIgnoredFlag) alreadyRegistered;
             }
             else throw fce;
         }

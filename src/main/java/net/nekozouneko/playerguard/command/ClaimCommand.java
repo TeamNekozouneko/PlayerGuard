@@ -3,6 +3,8 @@ package net.nekozouneko.playerguard.command;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldguard.WorldGuard;
+import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
@@ -82,11 +84,12 @@ public class ClaimCommand implements CommandExecutor, TabCompleter {
         GuardFlags.initRegionFlags(protect);
         protect.setFlag(PlayerGuard.getGuardRegisteredFlag(), StateFlag.State.ALLOW);
 
-        long count = rm.getApplicableRegions(protect).getRegions().stream()
+        ApplicableRegionSet ars = rm.getApplicableRegions(protect);
+        long count = ars.getRegions().stream()
                 .filter(pr -> !(pr instanceof GlobalProtectedRegion))
                 .count();
 
-        if (count > 0) {
+        if (count > 0 || ars.testState(WorldGuardPlugin.inst().wrapPlayer(p), PlayerGuard.getGuardIgnoredFlag())) {
             sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"領域が重複しています。");
             return true;
         }

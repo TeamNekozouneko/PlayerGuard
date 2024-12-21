@@ -59,7 +59,7 @@ public final class PlayerGuard extends JavaPlugin {
         }
 
         try {
-            guardIgnoredFlag = new GuardRegisteredFlag();
+            guardIgnoredFlag = new GuardIgnoredFlag();
             registry.register(guardIgnoredFlag);
         }
         catch (FlagConflictException fce) {

@@ -18,7 +18,9 @@ public enum GuardFlags {
     PLACE(null, Flags.BLOCK_PLACE),
     INTERACT(true, Flags.USE, Flags.INTERACT, Flags.CHEST_ACCESS, Flags.USE_ANVIL),
     PVP(false, Flags.PVP),
-    ENTITY_DAMAGE(true, Flags.DAMAGE_ANIMALS);
+    ENTITY_DAMAGE(true, Flags.DAMAGE_ANIMALS),
+    ENTRY(null, Flags.ENTRY, Flags.CHORUS_TELEPORT),
+    PISTONS(true, Flags.PISTONS, Flags.USE_DRIPLEAF);
 
     public enum State {
         ALLOW,DENY,UNSET,SOME_CHANGED

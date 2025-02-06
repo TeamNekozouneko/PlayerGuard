@@ -65,12 +65,24 @@ public class MenuGUI extends AbstractGUI{
                 .lore(ChatColor.GRAY + "状態："+stateToJapanese(GuardFlags.getState(region, GuardFlags.ENTITY_DAMAGE)))
                 .persistentData(key, new EnumDataType<>(GuardFlags.class), GuardFlags.ENTITY_DAMAGE)
                 .build();
+        ItemStack regionEntryFlag = ItemStackBuilder.of(Material.BARRIER)
+                .name(ChatColor.WHITE + "メンバー以外の侵入")
+                .lore(ChatColor.GRAY + "状態："+stateToJapanese(GuardFlags.getState(region, GuardFlags.ENTRY)))
+                .persistentData(key, new EnumDataType<>(GuardFlags.class), GuardFlags.ENTRY)
+                .build();
+        ItemStack pistonsFlag = ItemStackBuilder.of(Material.BARRIER)
+                .name(ChatColor.WHITE + "ピストンの使用")
+                .lore(ChatColor.GRAY + "状態："+stateToJapanese(GuardFlags.getState(region, GuardFlags.PISTONS)))
+                .persistentData(key, new EnumDataType<>(GuardFlags.class), GuardFlags.PISTONS)
+                .build();
 
-        inventory.setItem(0, breakFlag);
+        inventory.setItem(1, breakFlag);
         inventory.setItem(2, placeFlag);
-        inventory.setItem(4, interactFlag);
-        inventory.setItem(6, pvpFlag);
-        inventory.setItem(8, entityAttackFlag);
+        inventory.setItem(3, interactFlag);
+        inventory.setItem(4, pvpFlag);
+        inventory.setItem(5, entityAttackFlag);
+        inventory.setItem(6, pistonsFlag);
+        inventory.setItem(7, regionEntryFlag);
     }
 
     @EventHandler
@@ -94,7 +106,8 @@ public class MenuGUI extends AbstractGUI{
             case PLACE:
             case INTERACT:
             case PVP:
-            case ENTITY_DAMAGE: {
+            case ENTITY_DAMAGE:
+            case ENTRY: {
                 GuardFlags.State state = GuardFlags.getState(region, flag);
 
                 List<GuardFlags.State> states = Arrays.asList(GuardFlags.State.values());

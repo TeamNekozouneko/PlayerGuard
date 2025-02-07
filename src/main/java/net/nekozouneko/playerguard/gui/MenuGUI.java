@@ -70,7 +70,7 @@ public class MenuGUI extends AbstractGUI{
                 .lore(ChatColor.GRAY + "状態："+stateToJapanese(GuardFlags.getState(region, GuardFlags.ENTRY)))
                 .persistentData(key, new EnumDataType<>(GuardFlags.class), GuardFlags.ENTRY)
                 .build();
-        ItemStack pistonsFlag = ItemStackBuilder.of(Material.BARRIER)
+        ItemStack pistonsFlag = ItemStackBuilder.of(Material.PISTON)
                 .name(ChatColor.WHITE + "ピストンの使用")
                 .lore(ChatColor.GRAY + "状態："+stateToJapanese(GuardFlags.getState(region, GuardFlags.PISTONS)))
                 .persistentData(key, new EnumDataType<>(GuardFlags.class), GuardFlags.PISTONS)
@@ -107,7 +107,8 @@ public class MenuGUI extends AbstractGUI{
             case INTERACT:
             case PVP:
             case ENTITY_DAMAGE:
-            case ENTRY: {
+            case ENTRY:
+            case PISTONS: {
                 GuardFlags.State state = GuardFlags.getState(region, flag);
 
                 List<GuardFlags.State> states = Arrays.asList(GuardFlags.State.values());

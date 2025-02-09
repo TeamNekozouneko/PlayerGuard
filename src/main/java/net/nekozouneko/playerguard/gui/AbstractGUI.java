@@ -33,7 +33,7 @@ public abstract class AbstractGUI implements Listener, InventoryHolder {
     public static void clearAllAGUIListeners(Player player) {
         HandlerList.getHandlerLists().forEach(hl -> {
             for (RegisteredListener rl : hl.getRegisteredListeners()) {
-                if (rl.getListener() instanceof AbstractGUI) {
+                if (rl.getListener() instanceof AbstractGUI && ((AbstractGUI) rl.getListener()).getPlayer().equals(player)) {
                     HandlerList.unregisterAll(rl.getListener());
                 }
             }

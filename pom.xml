@@ -107,6 +107,17 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>net.nekozouneko.commons</groupId>
+            <artifactId>commons-java</artifactId>
+            <version>1.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.32</version>

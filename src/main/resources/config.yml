@@ -2,3 +2,6 @@
 #最大保護ブロック数 = protection_limit_base_value * ³√(max_consider_days)
 protection_limit_base_value: 30000 #基準値
 max_consider_days: 10 #考慮するプレイ日数の最大（日）
+
+#*** 保護の制約 ***
+min_spacing_between_regions: 0 #保護する際に他者の保護から離す必要があるブロック数

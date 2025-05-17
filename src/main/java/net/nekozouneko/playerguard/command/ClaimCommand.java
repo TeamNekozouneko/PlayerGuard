@@ -12,9 +12,11 @@ import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import net.md_5.bungee.api.ChatColor;
+import net.nekozouneko.playerguard.PGUtil;
 import net.nekozouneko.playerguard.PlayerGuard;
 import net.nekozouneko.playerguard.flag.GuardFlags;
 import net.nekozouneko.playerguard.selection.SelectionStorage;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -91,6 +93,20 @@ public class ClaimCommand implements CommandExecutor, TabCompleter {
 
         if (count > 0 || ars.testState(WorldGuardPlugin.inst().wrapPlayer(p), PlayerGuard.getGuardIgnoredFlag())) {
             sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"領域が重複しています。");
+            return true;
+        }
+
+        //min_spacing_between_regions
+        final int minSpace = PlayerGuard.getInstance().getConfig().getInt("min_spacing_between_regions", 0);
+        long minDelta = Long.MAX_VALUE;
+        if(minSpace != 0) for(ProtectedRegion region : rm.getRegions().values()){
+            final long delta = PGUtil.distanceBetweenRegions(region, protect);
+            if(delta == -1) continue; //distanceBetweenRegionsメソッドが算出できなかった時（__global__とか）
+            if(minDelta > delta) minDelta = delta;
+            if(delta <= minSpace) break;
+        }
+        if(minDelta <= minSpace){
+            sender.sendMessage(String.format(ChatColor.DARK_RED+"■ "+ChatColor.RED+"他者の領域からは%1$dブロック以上離されなければなりません。(最短%2$dブロックしか離れていません)", minSpace, minDelta));
             return true;
         }
 

@@ -33,7 +33,6 @@ public final class PlayerGuard extends JavaPlugin {
     private static StateFlag guardRegisteredFlag;
     @Getter
     private static StateFlag guardIgnoredFlag;
-    private static final int PROTECTION_LIMIT_BASE_VALUE = 30000;
 
     @Getter
     private SelectionStorage selectionStorage;
@@ -72,8 +71,9 @@ public final class PlayerGuard extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
-
         selectionStorage = new SelectionStorage();
+
+        saveDefaultConfig();
 
         getServer().getPluginManager().registerEvents(new PlayerChangedWorldListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
@@ -104,8 +104,10 @@ public final class PlayerGuard extends JavaPlugin {
     }
 
     public long getProtectLimit(Player player) {
+        final int protection_limit_base_value = getConfig().getInt("protection_limit_base_value", 30000);
+        final int max_consider_days = getConfig().getInt("max_consider_days", 10);
         int days = (player.getStatistic(Statistic.PLAY_ONE_MINUTE) / 20) / 60 / 60 / 24;
-        long limit = (long) (PROTECTION_LIMIT_BASE_VALUE * Math.cbrt(Math.min(Math.max(1, days+1), 10)));
+        long limit = (long) (protection_limit_base_value * Math.cbrt(Math.min(Math.max(1, days+1), max_consider_days)));
 
         NamespacedKey key = new NamespacedKey(this, "limit-extends");
         Long extend = player.getPersistentDataContainer().get(key, PersistentDataType.LONG);

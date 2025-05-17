@@ -1,0 +1,17 @@
+protection:
+  limit:
+    0: 30000
+    1: 40000
+
+  flags:
+    break: true
+    place: true
+    interact: true
+    pvp: true
+    entity-damage: true
+    entry: true
+    pistons: true
+
+  spacing:
+    min-spacing-between-regions: 0
+    apply-to-same-player-s-region: false

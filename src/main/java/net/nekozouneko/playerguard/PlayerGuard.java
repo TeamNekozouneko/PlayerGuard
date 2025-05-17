@@ -73,6 +73,10 @@ public final class PlayerGuard extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
+        saveDefaultConfig();
+        getConfig().options().copyDefaults(true);
+        PGConfig.setConfig(getConfig());
+
         selectionStorage = new SelectionStorage();
 
         getServer().getPluginManager().registerEvents(new PlayerChangedWorldListener(), this);
@@ -103,9 +107,14 @@ public final class PlayerGuard extends JavaPlugin {
         ConfirmCommand.clearConfirms();
     }
 
+    public void reload() {
+        reloadConfig();
+        PGConfig.setConfig(getConfig());
+    }
+
     public long getProtectLimit(Player player) {
         int days = (player.getStatistic(Statistic.PLAY_ONE_MINUTE) / 20) / 60 / 60 / 24;
-        long limit = (long) (PROTECTION_LIMIT_BASE_VALUE * Math.cbrt(Math.min(Math.max(1, days+1), 10)));
+        long limit = PGConfig.getLimit(days);
 
         NamespacedKey key = new NamespacedKey(this, "limit-extends");
         Long extend = player.getPersistentDataContainer().get(key, PersistentDataType.LONG);

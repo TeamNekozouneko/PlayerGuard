@@ -7,12 +7,14 @@ import net.nekozouneko.playerguard.PlayerGuard;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
-public class SelectionRenderTask extends BukkitRunnable {
+public class SelectionRenderTask extends TaskManager {
 
     private Map<UUID, CuboidRegion> previous = new HashMap<>();
     private boolean flushState = true;
@@ -165,9 +167,9 @@ public class SelectionRenderTask extends BukkitRunnable {
         Location pos1 = BukkitAdapter.adapt(player.getWorld(), region.getPos1());
         Location pos2 = BukkitAdapter.adapt(player.getWorld(), region.getPos2());
 
-        player.sendBlockChange(pos1, pos1.getBlock().getBlockData());
+        resetBlockChange(player, pos1);
         if (!region.getPos1().equals(region.getPos2())) {
-            player.sendBlockChange(pos2, pos2.getBlock().getBlockData());
+            resetBlockChange(player, pos2);
         }
 
         // X
@@ -185,8 +187,8 @@ public class SelectionRenderTask extends BukkitRunnable {
             highXPos.setX(highXPos.getBlockX()-1);
             lowXPos.setX(lowXPos.getBlockX()+1);
 
-            player.sendBlockChange(highXPos, highXPos.getBlock().getBlockData());
-            player.sendBlockChange(lowXPos, lowXPos.getBlock().getBlockData());
+            resetBlockChange(player, highXPos);
+            resetBlockChange(player, lowXPos);
         }
 
         // Y
@@ -204,8 +206,8 @@ public class SelectionRenderTask extends BukkitRunnable {
             highYPos.setY(highYPos.getBlockY()-1);
             lowYPos.setY(lowYPos.getBlockY()+1);
 
-            player.sendBlockChange(highYPos, highYPos.getBlock().getBlockData());
-            player.sendBlockChange(lowYPos, lowYPos.getBlock().getBlockData());
+            resetBlockChange(player, highYPos);
+            resetBlockChange(player, lowYPos);
         }
 
         // Z
@@ -223,8 +225,16 @@ public class SelectionRenderTask extends BukkitRunnable {
             highZPos.setZ(highZPos.getBlockZ()-1);
             lowZPos.setZ(lowZPos.getBlockZ()+1);
 
-            player.sendBlockChange(highZPos, highZPos.getBlock().getBlockData());
-            player.sendBlockChange(lowZPos, lowZPos.getBlock().getBlockData());
+            resetBlockChange(player, highZPos);
+            resetBlockChange(player, lowZPos);
+        }
+    }
+    private void resetBlockChange(Player player, Location location){
+        if(!PlayerGuard.isFolia){
+            player.sendBlockChange(location, location.getBlock().getBlockData());
+        }else{
+            Runnable runnable = () -> player.sendBlockChange(location, location.getBlock().getBlockData());
+            Bukkit.getRegionScheduler().execute(PlayerGuard.getInstance(), location, runnable);
         }
     }
 }

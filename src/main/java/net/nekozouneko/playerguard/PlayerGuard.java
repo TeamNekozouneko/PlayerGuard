@@ -8,6 +8,7 @@ import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
 import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
+import lombok.AccessLevel;
 import lombok.Getter;
 import net.nekozouneko.playerguard.command.*;
 import net.nekozouneko.playerguard.command.sub.playerguard.ConfirmCommand;
@@ -38,6 +39,16 @@ public final class PlayerGuard extends JavaPlugin {
     private SelectionStorage selectionStorage;
     private ActionbarTask regionActionbarTask;
     private SelectionRenderTask selectionRenderTask;
+
+    public static final Boolean isFolia = isClassExists("io.papermc.paper.threadedregions.RegionizedServer") || isClassExists("io.papermc.paper.threadedregions.RegionizedServerInitEvent");
+    private static boolean isClassExists(String clazz){
+        try{
+            Class.forName(clazz);
+            return true;
+        }catch (ClassNotFoundException e){
+            return false;
+        }
+    }
 
     @Override
     public void onLoad() {
@@ -95,9 +106,9 @@ public final class PlayerGuard extends JavaPlugin {
     public void onDisable() {
         instance = null;
 
-        safetyTaskCancel(regionActionbarTask);
+        regionActionbarTask.safetyTaskCancel();
         regionActionbarTask = null;
-        safetyTaskCancel(selectionRenderTask);
+        selectionRenderTask.safetyTaskCancel();
         selectionRenderTask = null;
 
         ConfirmCommand.clearConfirms();
@@ -136,11 +147,5 @@ public final class PlayerGuard extends JavaPlugin {
                         .filter(pr -> StateFlag.test(pr.getFlag(PlayerGuard.getGuardRegisteredFlag())))
                         .forEach(pr -> rm.removeRegion(pr.getId()))
         );
-    }
-
-    private void safetyTaskCancel(BukkitRunnable task) {
-        if (task == null || task.isCancelled()) return;
-
-        task.cancel();
     }
 }

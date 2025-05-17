@@ -14,13 +14,13 @@ import java.util.List;
 @Getter
 public enum GuardFlags {
 
-    BREAK(null, Flags.BLOCK_BREAK),
-    PLACE(null, Flags.BLOCK_PLACE),
-    INTERACT(true, Flags.USE, Flags.INTERACT, Flags.CHEST_ACCESS, Flags.USE_ANVIL),
-    PVP(false, Flags.PVP),
-    ENTITY_DAMAGE(true, Flags.DAMAGE_ANIMALS),
-    ENTRY(null, Flags.ENTRY, Flags.CHORUS_TELEPORT),
-    PISTONS(true, Flags.PISTONS, Flags.USE_DRIPLEAF);
+    BREAK("break", null, Flags.BLOCK_BREAK),
+    PLACE("place", null, Flags.BLOCK_PLACE),
+    INTERACT("interact", true, Flags.USE, Flags.INTERACT, Flags.CHEST_ACCESS, Flags.USE_ANVIL),
+    PVP("pvp", false, Flags.PVP),
+    ENTITY_DAMAGE("entity-damage", true, Flags.DAMAGE_ANIMALS),
+    ENTRY("entry", null, Flags.ENTRY, Flags.CHORUS_TELEPORT),
+    PISTONS("pistons", true, Flags.PISTONS, Flags.USE_DRIPLEAF);
 
     public enum State {
         ALLOW,DENY,UNSET,SOME_CHANGED
@@ -28,8 +28,10 @@ public enum GuardFlags {
 
     private final Boolean defaultValue;
     private final StateFlag[] flags;
+    private final String configId;
 
-    GuardFlags(Boolean defaultValue, StateFlag... flags) {
+    GuardFlags(String configId, Boolean defaultValue, StateFlag... flags) {
+        this.configId = configId;
         this.defaultValue = defaultValue;
         this.flags = flags;
     }
@@ -59,6 +61,14 @@ public enum GuardFlags {
                 region.setFlag(f, state);
                 region.setFlag(f.getRegionGroupFlag(), gf == PVP ? null : RegionGroup.NON_MEMBERS);
             }
+        }
+    }
+
+    public static void initRegionFlag(ProtectedRegion region, GuardFlags flag) {
+        StateFlag.State state = PGUtil.boolToState(flag.getDefaultValue());
+        for (StateFlag f : flag.getFlags()) {
+            region.setFlag(f, state);
+            region.setFlag(f.getRegionGroupFlag(), flag == PVP ? null : RegionGroup.NON_MEMBERS);
         }
     }
 

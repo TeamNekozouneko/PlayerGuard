@@ -5,6 +5,7 @@ import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import net.nekozouneko.commons.spigot.inventory.ItemStackBuilder;
 import net.nekozouneko.commons.spigot.persistence.EnumDataType;
+import net.nekozouneko.playerguard.PGConfig;
 import net.nekozouneko.playerguard.PGUtil;
 import net.nekozouneko.playerguard.PlayerGuard;
 import net.nekozouneko.playerguard.flag.GuardFlags;
@@ -108,6 +109,14 @@ public class MenuGUI extends AbstractGUI{
             case ENTITY_DAMAGE:
             case ENTRY:
             case PISTONS: {
+                if (PGConfig.isFlagDisabled(flag)) {
+                    GuardFlags.initRegionFlag(region, flag);
+
+                    getPlayer().playSound(getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 10, 0);
+                    init();
+                    return;
+                }
+
                 GuardFlags.State state = GuardFlags.getState(region, flag);
 
                 List<GuardFlags.State> states = Arrays.asList(GuardFlags.State.values());

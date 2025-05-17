@@ -59,4 +59,5 @@ permissions:
       - playerguard.command.admin.lookup
       - playerguard.command.admin.deleteall
       - playerguard.command.admin.deletesection
+      - playerguard.command.admin.reload
     default: op

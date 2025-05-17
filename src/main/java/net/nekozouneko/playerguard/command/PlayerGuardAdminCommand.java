@@ -4,10 +4,7 @@ import net.md_5.bungee.api.ChatColor;
 import net.nekozouneko.commons.spigot.command.TabCompletes;
 import net.nekozouneko.playerguard.command.sub.SubCommand;
 import net.nekozouneko.playerguard.command.sub.SubCommandManager;
-import net.nekozouneko.playerguard.command.sub.admin.DeleteAllCommand;
-import net.nekozouneko.playerguard.command.sub.admin.DeleteSectionCommand;
-import net.nekozouneko.playerguard.command.sub.admin.ExpandCommand;
-import net.nekozouneko.playerguard.command.sub.admin.LookupSectionCommand;
+import net.nekozouneko.playerguard.command.sub.admin.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -27,6 +24,7 @@ public class PlayerGuardAdminCommand implements CommandExecutor, TabCompleter {
         manager.register("deletesection", new DeleteSectionCommand());
         manager.register("expand", new ExpandCommand());
         manager.register("lookup", new LookupSectionCommand());
+        manager.register("reload", new ReloadCommand());
     }
 
     @Override

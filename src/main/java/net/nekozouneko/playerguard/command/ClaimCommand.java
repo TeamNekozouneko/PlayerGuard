@@ -2,6 +2,7 @@ package net.nekozouneko.playerguard.command;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
@@ -102,6 +103,7 @@ public class ClaimCommand implements CommandExecutor, TabCompleter {
         if(minSpace != 0) for(ProtectedRegion region : rm.getRegions().values()){
             final long delta = PGUtil.distanceBetweenRegions(region, protect);
             if(delta == -1) continue; //distanceBetweenRegionsメソッドが算出できなかった時（__global__とか）
+            if(region.getOwners().contains(WorldGuardPlugin.inst().wrapPlayer(p))) continue; //主になっている保護は除外
             if(minDelta > delta) minDelta = delta;
             if(delta <= minSpace) break;
         }

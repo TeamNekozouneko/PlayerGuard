@@ -12,9 +12,13 @@ import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import net.md_5.bungee.api.ChatColor;
+import net.nekozouneko.playerguard.PGConfig;
+import net.nekozouneko.playerguard.PGUtil;
 import net.nekozouneko.playerguard.PlayerGuard;
 import net.nekozouneko.playerguard.flag.GuardFlags;
+import net.nekozouneko.playerguard.flag.GuardRegisteredFlag;
 import net.nekozouneko.playerguard.selection.SelectionStorage;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -91,6 +95,26 @@ public class ClaimCommand implements CommandExecutor, TabCompleter {
 
         if (count > 0 || ars.testState(WorldGuardPlugin.inst().wrapPlayer(p), PlayerGuard.getGuardIgnoredFlag())) {
             sender.sendMessage(ChatColor.DARK_RED+"■ "+ChatColor.RED+"領域が重複しています。");
+            return true;
+        }
+
+        long minDistance = Long.MAX_VALUE;
+        for (ProtectedRegion otherRegion : rm.getRegions().values()) {
+            if (otherRegion.getFlag(PlayerGuard.getGuardRegisteredFlag()) != StateFlag.State.ALLOW) continue;
+            Bukkit.broadcastMessage("1");
+            if (!PGConfig.doApplyToSamePlayerSRegion() && otherRegion.getOwners().contains(p.getUniqueId())) continue;
+            Bukkit.broadcastMessage("2");
+
+            long d = PGUtil.distanceBetweenRegions(protect, otherRegion);
+            Bukkit.broadcastMessage("3: " + d);
+            if (d < 0) continue;
+            minDistance = Math.min(minDistance, d);
+        }
+
+        Bukkit.broadcastMessage("minDist: " + minDistance);
+
+        if (minDistance <= PGConfig.getMinSpacingBetweenRegions()) {
+            sender.sendMessage(String.format(ChatColor.DARK_RED+"■ "+ChatColor.RED+"領域が他の領域と近いです。(%d)", minDistance));
             return true;
         }
 

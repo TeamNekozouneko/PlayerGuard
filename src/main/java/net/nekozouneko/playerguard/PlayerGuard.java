@@ -32,6 +32,8 @@ public final class PlayerGuard extends JavaPlugin {
     private static StateFlag guardRegisteredFlag;
     @Getter
     private static StateFlag guardIgnoredFlag;
+    @Getter
+    private static StateFlag guardSpacingFlag;
 
     @Getter
     private SelectionStorage selectionStorage;
@@ -72,6 +74,18 @@ public final class PlayerGuard extends JavaPlugin {
             Flag<?> alreadyRegistered = registry.get("pguard-ignored");
             if (alreadyRegistered instanceof GuardIgnoredFlag) {
                 guardIgnoredFlag = (GuardIgnoredFlag) alreadyRegistered;
+            }
+            else throw fce;
+        }
+
+        try {
+            guardSpacingFlag = new StateFlag("pguard-spacing", true);
+            registry.register(guardSpacingFlag);
+        }
+        catch (FlagConflictException fce) {
+            Flag<?> alreadyRegistered = registry.get("pguard-spacing");
+            if (alreadyRegistered instanceof StateFlag) {
+                guardSpacingFlag= (StateFlag) alreadyRegistered;
             }
             else throw fce;
         }

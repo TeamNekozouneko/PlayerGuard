@@ -74,6 +74,11 @@ public class MenuGUI extends AbstractGUI{
                 .lore(ChatColor.GRAY + "状態："+stateToJapanese(GuardFlags.getState(region, GuardFlags.PISTONS)))
                 .persistentData(key, new EnumDataType<>(GuardFlags.class), GuardFlags.PISTONS)
                 .build();
+        ItemStack spacingFlag = ItemStackBuilder.of(Material.GLASS)
+                .name(ChatColor.WHITE + "周辺に保護されないようにする")
+                .lore(ChatColor.GRAY + "状態："+stateToJapanese(GuardFlags.getState(region, GuardFlags.SPACING)) + "\n(有効な場合"+PlayerGuard.getInstance().getConfig().getInt("min_spacing_between_regions")+"ブロック以内は誰も保護できません。)")
+                .persistentData(key, new EnumDataType<>(GuardFlags.class), GuardFlags.SPACING)
+                .build();
 
         inventory.setItem(1, breakFlag);
         inventory.setItem(2, placeFlag);
@@ -82,6 +87,7 @@ public class MenuGUI extends AbstractGUI{
         inventory.setItem(5, entityAttackFlag);
         inventory.setItem(6, pistonsFlag);
         inventory.setItem(7, regionEntryFlag);
+        if (PlayerGuard.getInstance().getConfig().getInt("min_spacing_between_regions") > 0) inventory.setItem(8, spacingFlag);
     }
 
     @EventHandler
@@ -107,7 +113,8 @@ public class MenuGUI extends AbstractGUI{
             case PVP:
             case ENTITY_DAMAGE:
             case ENTRY:
-            case PISTONS: {
+            case PISTONS:
+            case SPACING: {
                 GuardFlags.State state = GuardFlags.getState(region, flag);
 
                 List<GuardFlags.State> states = Arrays.asList(GuardFlags.State.values());

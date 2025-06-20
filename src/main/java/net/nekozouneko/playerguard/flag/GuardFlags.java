@@ -7,6 +7,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import lombok.Getter;
 import net.nekozouneko.commons.lang.collect.Collections3;
 import net.nekozouneko.playerguard.PGUtil;
+import net.nekozouneko.playerguard.PlayerGuard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,8 @@ public enum GuardFlags {
     PVP(false, Flags.PVP),
     ENTITY_DAMAGE(true, Flags.DAMAGE_ANIMALS),
     ENTRY(null, Flags.ENTRY, Flags.CHORUS_TELEPORT),
-    PISTONS(true, Flags.PISTONS, Flags.USE_DRIPLEAF);
+    PISTONS(true, Flags.PISTONS, Flags.USE_DRIPLEAF),
+    SPACING(true, PlayerGuard.getGuardSpacingFlag());
 
     public enum State {
         ALLOW,DENY,UNSET,SOME_CHANGED

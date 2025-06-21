@@ -99,7 +99,7 @@ public class ClaimCommand implements CommandExecutor, TabCompleter {
         final int minSpace = PlayerGuard.getInstance().getConfig().getInt("min_spacing_between_regions", 0);
         long minDelta = Long.MAX_VALUE;
         if(minSpace != 0) for(ProtectedRegion region : rm.getRegions().values()){
-            if (region.getFlag(PlayerGuard.getGuardSpacingFlag()) != StateFlag.State.DENY) continue;
+            if (region.getFlag(PlayerGuard.getGuardSpacingFlag()) == StateFlag.State.ALLOW) continue;
 
             final long delta = PGUtil.distanceBetweenRegions(region, protect);
             if(delta == -1) continue; //distanceBetweenRegionsメソッドが算出できなかった時（__global__とか）

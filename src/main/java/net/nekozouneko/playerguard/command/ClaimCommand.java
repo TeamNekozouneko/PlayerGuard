@@ -99,7 +99,7 @@ public class ClaimCommand implements CommandExecutor, TabCompleter {
         final int minSpace = PlayerGuard.getInstance().getConfig().getInt("min_spacing_between_regions", 0);
         long minDelta = Long.MAX_VALUE;
         if(minSpace != 0) for(ProtectedRegion region : rm.getRegions().values()){
-            if (region.getFlag(PlayerGuard.getGuardSpacingFlag()) == StateFlag.State.DENY) continue;
+            if (region.getFlag(PlayerGuard.getGuardSpacingFlag()) != StateFlag.State.DENY) continue;
 
             final long delta = PGUtil.distanceBetweenRegions(region, protect);
             if(delta == -1) continue; //distanceBetweenRegionsメソッドが算出できなかった時（__global__とか）
@@ -108,7 +108,7 @@ public class ClaimCommand implements CommandExecutor, TabCompleter {
             if(delta <= minSpace) break;
         }
         if(minDelta <= minSpace){
-            sender.sendMessage(String.format(ChatColor.DARK_RED+"■ "+ChatColor.RED+"他者の領域からは%1$dブロック以上離されなければなりません。(最短%2$dブロックしか離れていません)", minSpace, minDelta));
+            sender.sendMessage(String.format(ChatColor.DARK_RED+"■ "+ChatColor.RED+"%1$dブロック以内に周辺の保護が拒否されている保護があります。(現在最短%2$dブロック離れています)", minSpace, minDelta));
             return true;
         }
 

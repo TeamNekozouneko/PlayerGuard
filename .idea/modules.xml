@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/playerguard.iml" filepath="$PROJECT_DIR$/playerguard.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/PlayerGuard.iml" filepath="$PROJECT_DIR$/.idea/PlayerGuard.iml" />
     </modules>
   </component>
 </project>

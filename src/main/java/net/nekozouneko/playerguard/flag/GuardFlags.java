@@ -22,7 +22,7 @@ public enum GuardFlags {
     ENTITY_DAMAGE(true, Flags.DAMAGE_ANIMALS),
     ENTRY(null, Flags.ENTRY, Flags.CHORUS_TELEPORT),
     PISTONS(true, Flags.PISTONS, Flags.USE_DRIPLEAF),
-    SPACING(true, PlayerGuard.getGuardSpacingFlag());
+    SPACING(false, PlayerGuard.getGuardSpacingFlag());
 
     public enum State {
         ALLOW,DENY,UNSET,SOME_CHANGED

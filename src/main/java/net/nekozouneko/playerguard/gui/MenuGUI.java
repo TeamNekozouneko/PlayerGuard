@@ -75,7 +75,7 @@ public class MenuGUI extends AbstractGUI{
                 .persistentData(key, new EnumDataType<>(GuardFlags.class), GuardFlags.PISTONS)
                 .build();
         ItemStack spacingFlag = ItemStackBuilder.of(Material.GLASS)
-                .name(ChatColor.WHITE + "他にプレイヤーによる周辺の保護")
+                .name(ChatColor.WHITE + "他のプレイヤーによる周辺の保護")
                 .lore(ChatColor.GRAY + "状態："+stateToJapanese(GuardFlags.getState(region, GuardFlags.SPACING)) + "\n(許可すると"+PlayerGuard.getInstance().getConfig().getInt("min_spacing_between_regions")+"ブロック以内に\n他のプレイヤーが保護できるようになります。)")
                 .persistentData(key, new EnumDataType<>(GuardFlags.class), GuardFlags.SPACING)
                 .build();

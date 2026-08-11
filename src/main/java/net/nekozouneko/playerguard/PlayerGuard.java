@@ -8,13 +8,19 @@ import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
 import com.sk89q.worldguard.protection.regions.GlobalProtectedRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
+import io.papermc.paper.ServerBuildInfo;
 import lombok.Getter;
+import net.kyori.adventure.key.Key;
 import net.nekozouneko.playerguard.command.*;
 import net.nekozouneko.playerguard.command.sub.playerguard.ConfirmCommand;
 import net.nekozouneko.playerguard.flag.GuardIgnoredFlag;
 import net.nekozouneko.playerguard.flag.GuardRegisteredFlag;
 import net.nekozouneko.playerguard.listener.PlayerChangedWorldListener;
 import net.nekozouneko.playerguard.listener.PlayerInteractListener;
+import net.nekozouneko.playerguard.scheduler.BukkitTaskScheduler;
+import net.nekozouneko.playerguard.scheduler.FoliaTaskScheduler;
+import net.nekozouneko.playerguard.scheduler.PluginTask;
+import net.nekozouneko.playerguard.scheduler.TaskScheduler;
 import net.nekozouneko.playerguard.selection.SelectionStorage;
 import net.nekozouneko.playerguard.task.ActionbarTask;
 import net.nekozouneko.playerguard.task.SelectionRenderTask;
@@ -23,7 +29,6 @@ import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public final class PlayerGuard extends JavaPlugin {
 
@@ -33,12 +38,31 @@ public final class PlayerGuard extends JavaPlugin {
     private static StateFlag guardRegisteredFlag;
     @Getter
     private static StateFlag guardIgnoredFlag;
+    @Getter
+    private static TaskScheduler taskScheduler;
+
     private static final int PROTECTION_LIMIT_BASE_VALUE = 30000;
 
     @Getter
     private SelectionStorage selectionStorage;
     private ActionbarTask regionActionbarTask;
     private SelectionRenderTask selectionRenderTask;
+
+    private static Boolean isFolia = null;
+
+    public static boolean isFolia() {
+        if (isFolia != null) return isFolia;
+
+        boolean result = PGUtil.classExists("io.papermc.paper.threadedregions.RegionizedServer");
+
+        if (PGUtil.classExists("io.papermc.paper.ServerBuildInfo")) {
+            result = result || ServerBuildInfo.buildInfo().isBrandCompatible(Key.key("papermc", "folia"));
+        }
+
+        isFolia = result;
+
+        return result;
+    }
 
     @Override
     public void onLoad() {
@@ -82,10 +106,12 @@ public final class PlayerGuard extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerChangedWorldListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerInteractListener(), this);
 
+        taskScheduler = isFolia() ? new FoliaTaskScheduler(this) : new BukkitTaskScheduler(this);
+
         regionActionbarTask = new ActionbarTask();
-        regionActionbarTask.runTaskTimer(this, 0, 20);
+        taskScheduler.runTaskTimer(regionActionbarTask, 1, 20);
         selectionRenderTask = new SelectionRenderTask();
-        selectionRenderTask.runTaskTimer(this, 0, 10);
+        taskScheduler.runTaskTimer(selectionRenderTask, 1, 10);
 
         getCommand("cancel-claim").setExecutor(new CancelCommand());
         getCommand("claim").setExecutor(new ClaimCommand());
@@ -119,7 +145,7 @@ public final class PlayerGuard extends JavaPlugin {
         NamespacedKey key = new NamespacedKey(this, "limit-extends");
         Long extend = player.getPersistentDataContainer().get(key, PersistentDataType.LONG);
 
-        if (extend != null) {
+        if (extend != null && limit != -1) {
             return limit + extend;
         }
 
@@ -145,7 +171,7 @@ public final class PlayerGuard extends JavaPlugin {
         );
     }
 
-    private void safetyTaskCancel(BukkitRunnable task) {
+    private void safetyTaskCancel(PluginTask task) {
         if (task == null || task.isCancelled()) return;
 
         task.cancel();

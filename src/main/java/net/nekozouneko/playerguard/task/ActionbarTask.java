@@ -1,26 +1,24 @@
 package net.nekozouneko.playerguard.task;
 
 import com.sk89q.worldedit.regions.CuboidRegion;
-import com.sk89q.worldguard.WorldGuard;
-import com.sk89q.worldguard.internal.platform.WorldGuardPlatform;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.nekozouneko.playerguard.PGUtil;
 import net.nekozouneko.playerguard.PlayerGuard;
+import net.nekozouneko.playerguard.scheduler.PluginTask;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.stream.Collectors;
 
-public class ActionbarTask extends BukkitRunnable {
-
-    private final WorldGuardPlatform platform = WorldGuard.getInstance().getPlatform();
+@RequiredArgsConstructor
+public class ActionbarTask extends PluginTask {
 
     @Override
     public void run() {

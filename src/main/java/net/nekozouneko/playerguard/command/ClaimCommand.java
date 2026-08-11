@@ -16,9 +16,7 @@ import net.nekozouneko.playerguard.PGConfig;
 import net.nekozouneko.playerguard.PGUtil;
 import net.nekozouneko.playerguard.PlayerGuard;
 import net.nekozouneko.playerguard.flag.GuardFlags;
-import net.nekozouneko.playerguard.flag.GuardRegisteredFlag;
 import net.nekozouneko.playerguard.selection.SelectionStorage;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -56,7 +54,7 @@ public class ClaimCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        if (limit <= used + cr.getVolume()) {
+        if (limit <= used + cr.getVolume() && limit != -1) {
             ss.clear(p.getUniqueId());
             p.sendMessage(String.format(ChatColor.DARK_RED +"■ "+ChatColor.RED+"保護領域の制限を超過しています。(%d (%d) > %d)", used + cr.getVolume(), cr.getVolume(), limit));
             return true;

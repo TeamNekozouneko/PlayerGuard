@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 @AllArgsConstructor
 public abstract class TaskScheduler {

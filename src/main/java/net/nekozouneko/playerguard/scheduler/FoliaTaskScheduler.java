@@ -1,7 +1,6 @@
 package net.nekozouneko.playerguard.scheduler;
 
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
